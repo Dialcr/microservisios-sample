@@ -1,6 +1,7 @@
 using Serilog;
 using OrderService.Application;
 using OrderService.Infrastructure;
+using OrderService.Infrastructure.Persistence;
 using OrderService.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+    await OrderDbContextSeed.SeedAsync(context);
+}
 
 app.Run();
 

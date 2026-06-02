@@ -1,6 +1,7 @@
 using Serilog;
 using ProductService.Application;
 using ProductService.Infrastructure;
+using ProductService.Infrastructure.Persistence;
 using ProductService.Api.Middleware;
 using ProductService.Api.Services;
 
@@ -33,6 +34,12 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.MapControllers();
 app.MapGrpcService<ProductGrpcService>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+    await ProductDbContextSeed.SeedAsync(context);
+}
 
 app.Run();
 

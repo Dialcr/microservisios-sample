@@ -1,6 +1,7 @@
 using Serilog;
 using PaymentService.Application;
 using PaymentService.Infrastructure;
+using PaymentService.Infrastructure.Persistence;
 using PaymentService.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<PaymentDbContext>();
+    await PaymentDbContextSeed.SeedAsync(context);
+}
 
 app.Run();
 

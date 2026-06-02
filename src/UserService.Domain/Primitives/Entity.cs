@@ -3,9 +3,6 @@ namespace UserService.Domain.Primitives;
 public abstract class Entity
 {
     public Guid Id { get; protected set; }
-
-    protected Entity()
-    {
-        Id = Guid.NewGuid();
-    }
+    protected Entity() { Id = Guid.NewGuid(); }
+    public void SetId(Guid id) { Id = id; }
 }

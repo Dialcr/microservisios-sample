@@ -1,6 +1,7 @@
 using Serilog;
 using UserService.Application;
 using UserService.Infrastructure;
+using UserService.Infrastructure.Persistence;
 using UserService.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    await UserDbContextSeed.SeedAsync(context);
+}
 
 app.Run();
 

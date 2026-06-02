@@ -1,6 +1,7 @@
 using Serilog;
 using NotificationService.Application;
 using NotificationService.Infrastructure;
+using NotificationService.Infrastructure.Persistence;
 using NotificationService.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+    await NotificationDbContextSeed.SeedAsync(context);
+}
 
 app.Run();
 
