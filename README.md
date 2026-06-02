@@ -81,6 +81,58 @@ cd src/PaymentService.Api && dotnet run --urls http://localhost:5004
 cd src/NotificationService.Api && dotnet run --urls http://localhost:5005
 ```
 
+## Database Migrations
+
+Each service has its own PostgreSQL database and uses EF Core migrations.
+
+### Prerequisites
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+### Create migrations
+
+Run these commands from the solution root (`MicroservicesDemo/`):
+
+```bash
+# User Service (Port 5432, Database: userservice)
+dotnet ef migrations add InitialCreate --project src/UserService.Infrastructure --startup-project src/UserService.Api
+
+# Product Service (Port 5433, Database: productservice)
+dotnet ef migrations add InitialCreate --project src/ProductService.Infrastructure --startup-project src/ProductService.Api
+
+# Order Service (Port 5434, Database: orderservice)
+dotnet ef migrations add InitialCreate --project src/OrderService.Infrastructure --startup-project src/OrderService.Api
+
+# Payment Service (Port 5435, Database: paymentservice)
+dotnet ef migrations add InitialCreate --project src/PaymentService.Infrastructure --startup-project src/PaymentService.Api
+
+# Notification Service (Port 5436, Database: notificationservice)
+dotnet ef migrations add InitialCreate --project src/NotificationService.Infrastructure --startup-project src/NotificationService.Api
+```
+
+### Apply migrations
+
+```bash
+# User Service
+dotnet ef database update --project src/UserService.Infrastructure --startup-project src/UserService.Api
+
+# Product Service
+dotnet ef database update --project src/ProductService.Infrastructure --startup-project src/ProductService.Api
+
+# Order Service
+dotnet ef database update --project src/OrderService.Infrastructure --startup-project src/OrderService.Api
+
+# Payment Service
+dotnet ef database update --project src/PaymentService.Infrastructure --startup-project src/PaymentService.Api
+
+# Notification Service
+dotnet ef database update --project src/NotificationService.Infrastructure --startup-project src/NotificationService.Api
+```
+
+> Note: The Infrastructure project contains the `DbContext`, and the API project provides the configuration (connection string). You must have PostgreSQL running before applying migrations.
+
 ### Running Tests
 
 ```bash
