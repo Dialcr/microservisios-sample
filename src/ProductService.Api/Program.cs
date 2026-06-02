@@ -4,11 +4,31 @@ using ProductService.Infrastructure;
 using ProductService.Infrastructure.Persistence;
 using ProductService.Api.Middleware;
 using ProductService.Api.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
+// Enable HTTP/2 without TLS for development
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration));
+
+// Configure Kestrel with separate ports for HTTP/1 (REST) and HTTP/2 (gRPC)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // HTTP/1.1 for REST API on port 5002
+    options.Listen(System.Net.IPAddress.Loopback, 5002, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1;
+    });
+
+    // HTTP/2 for gRPC on port 50051
+    options.Listen(System.Net.IPAddress.Loopback, 50051, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();

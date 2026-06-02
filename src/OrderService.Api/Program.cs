@@ -4,6 +4,9 @@ using OrderService.Infrastructure;
 using OrderService.Infrastructure.Persistence;
 using OrderService.Api.Middleware;
 
+// Enable HTTP/2 without TLS for gRPC client (development)
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>

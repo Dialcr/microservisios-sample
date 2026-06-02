@@ -28,7 +28,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
         {
             var product = await _productGrpcClient.GetProductAsync(item.ProductId);
             if (product is null)
-                throw new DllNotFoundException($"Product {item.ProductId} not found");
+                throw new InvalidOperationException($"Product {item.ProductId} not found");
         }
 
         var orderItems = request.Items
