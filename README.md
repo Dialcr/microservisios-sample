@@ -16,13 +16,13 @@ Order Service (REST) ────┤─── RabbitMQ ──→ Payment Service
 
 ## Microservices
 
-| Service | Port | Database | Description |
-|---------|------|----------|-------------|
-| User Service | 5001 | PostgreSQL (5432) | User registration and querying |
-| Product Service | 5002 | PostgreSQL (5433) | Product management and inventory |
-| Order Service | 5003 | PostgreSQL (5434) | Order creation with gRPC product validation |
-| Payment Service | 5004 | PostgreSQL (5435) | Async payment processing via RabbitMQ |
-| Notification Service | 5005 | PostgreSQL (5436) | Email notification simulation |
+| Service              | Port | Database          | Description                                 |
+| -------------------- | ---- | ----------------- | ------------------------------------------- |
+| User Service         | 5001 | PostgreSQL (5432) | User registration and querying              |
+| Product Service      | 5002 | PostgreSQL (5433) | Product management and inventory            |
+| Order Service        | 5003 | PostgreSQL (5434) | Order creation with gRPC product validation |
+| Payment Service      | 5004 | PostgreSQL (5435) | Async payment processing via RabbitMQ       |
+| Notification Service | 5005 | PostgreSQL (5436) | Email notification simulation               |
 
 ## Technologies
 
@@ -40,6 +40,7 @@ Order Service (REST) ────┤─── RabbitMQ ──→ Payment Service
 ## SOLID Principles
 
 See `src/SOLID/` for comprehensive examples of each principle:
+
 - SRP: Single Responsibility Principle (Before/After)
 - OCP: Open/Closed Principle (Discount Strategy pattern)
 - LSP: Liskov Substitution Principle (Before/After with Shape hierarchy)
@@ -61,6 +62,7 @@ docker compose up -d --build
 ```
 
 This will start:
+
 - 5 PostgreSQL instances (one per service)
 - RabbitMQ with Management UI (port 15672)
 - All 5 microservices
@@ -68,11 +70,13 @@ This will start:
 ### Running locally
 
 1. Start PostgreSQL and RabbitMQ:
+
 ```bash
 docker compose up -d postgres-users postgres-products postgres-orders postgres-payments postgres-notifications rabbitmq
 ```
 
 2. Run each service individually:
+
 ```bash
 cd src/UserService.Api && dotnet run --urls http://localhost:5001
 cd src/ProductService.Api && dotnet run --urls http://localhost:5002
@@ -153,22 +157,27 @@ dotnet test tests/Integration.Tests
 ## API Endpoints
 
 ### User Service (http://localhost:5001/swagger)
+
 - `POST /api/users` - Create user
 - `GET /api/users/{id}` - Get user by ID
 
 ### Product Service (http://localhost:5002/swagger)
+
 - `POST /api/products` - Create product
 - `GET /api/products` - List all products
 - `GET /api/products/{id}` - Get product by ID
 
 ### Order Service (http://localhost:5003/swagger)
+
 - `POST /api/orders` - Create order (validates products via gRPC)
 - `GET /api/orders/{id}` - Get order by ID
 
 ### Payment Service (http://localhost:5004/swagger)
+
 - `GET /api/payments/health` - Health check
 
 ### Notification Service (http://localhost:5005/swagger)
+
 - `GET /api/notifications/health` - Health check
 
 ## Communication Flow
