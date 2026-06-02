@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY src/Shared.EventBus/ Shared.EventBus/
+COPY src/ProductService.Domain/ ProductService.Domain/
+COPY src/ProductService.Application/ ProductService.Application/
+COPY src/ProductService.Infrastructure/ ProductService.Infrastructure/
+COPY src/ProductService.Api/ ProductService.Api/
+RUN dotnet restore ProductService.Api/ProductService.Api.csproj
+RUN dotnet build ProductService.Api/ProductService.Api.csproj -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish ProductService.Api/ProductService.Api.csproj -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+EXPOSE 5002
+ENTRYPOINT ["dotnet", "ProductService.Api.dll"]

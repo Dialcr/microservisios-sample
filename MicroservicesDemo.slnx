@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NotificationService.Api/NotificationService.Api.csproj" />
+    <Project Path="src/NotificationService.Application/NotificationService.Application.csproj" />
+    <Project Path="src/NotificationService.Domain/NotificationService.Domain.csproj" />
+    <Project Path="src/NotificationService.Infrastructure/NotificationService.Infrastructure.csproj" />
+    <Project Path="src/OrderService.Api/OrderService.Api.csproj" />
+    <Project Path="src/OrderService.Application/OrderService.Application.csproj" />
+    <Project Path="src/OrderService.Domain/OrderService.Domain.csproj" />
+    <Project Path="src/OrderService.Infrastructure/OrderService.Infrastructure.csproj" />
+    <Project Path="src/PaymentService.Api/PaymentService.Api.csproj" />
+    <Project Path="src/PaymentService.Application/PaymentService.Application.csproj" />
+    <Project Path="src/PaymentService.Domain/PaymentService.Domain.csproj" />
+    <Project Path="src/PaymentService.Infrastructure/PaymentService.Infrastructure.csproj" />
+    <Project Path="src/ProductService.Api/ProductService.Api.csproj" />
+    <Project Path="src/ProductService.Application/ProductService.Application.csproj" />
+    <Project Path="src/ProductService.Domain/ProductService.Domain.csproj" />
+    <Project Path="src/ProductService.Infrastructure/ProductService.Infrastructure.csproj" />
+    <Project Path="src/Shared.EventBus/Shared.EventBus.csproj" />
+    <Project Path="src/UserService.Api/UserService.Api.csproj" />
+    <Project Path="src/UserService.Application/UserService.Application.csproj" />
+    <Project Path="src/UserService.Domain/UserService.Domain.csproj" />
+    <Project Path="src/UserService.Infrastructure/UserService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Integration.Tests/Integration.Tests.csproj" />
+    <Project Path="tests/NotificationService.Tests/NotificationService.Tests.csproj" />
+    <Project Path="tests/OrderService.Tests/OrderService.Tests.csproj" />
+    <Project Path="tests/PaymentService.Tests/PaymentService.Tests.csproj" />
+    <Project Path="tests/ProductService.Tests/ProductService.Tests.csproj" />
+    <Project Path="tests/UserService.Tests/UserService.Tests.csproj" />
+  </Folder>
+</Solution>

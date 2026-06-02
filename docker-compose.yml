@@ -1,0 +1,176 @@
+services:
+  postgres-users:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: userservice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-users:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  postgres-products:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: productservice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-products:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  postgres-orders:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: orderservice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata-orders:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  postgres-payments:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: paymentservice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata-payments:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  postgres-notifications:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: notificationservice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - pgdata-notifications:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - microservices-net
+
+  userservice:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.userservice
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5001
+      - ConnectionStrings__DefaultConnection=Host=postgres-users;Port=5432;Database=userservice;Username=postgres;Password=postgres
+    depends_on:
+      - postgres-users
+    networks:
+      - microservices-net
+
+  productservice:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.productservice
+    ports:
+      - "5002:5002"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5002
+      - ConnectionStrings__DefaultConnection=Host=postgres-products;Port=5432;Database=productservice;Username=postgres;Password=postgres
+    depends_on:
+      - postgres-products
+    networks:
+      - microservices-net
+
+  orderservice:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.orderservice
+    ports:
+      - "5003:5003"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5003
+      - ConnectionStrings__DefaultConnection=Host=postgres-orders;Port=5432;Database=orderservice;Username=postgres;Password=postgres
+      - EventBus__Host=rabbitmq
+      - EventBus__Port=5672
+      - GrpcSettings__ProductServiceUrl=http://productservice:5002
+    depends_on:
+      - postgres-orders
+      - rabbitmq
+      - productservice
+    networks:
+      - microservices-net
+
+  paymentservice:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.paymentservice
+    ports:
+      - "5004:5004"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5004
+      - ConnectionStrings__DefaultConnection=Host=postgres-payments;Port=5432;Database=paymentservice;Username=postgres;Password=postgres
+      - EventBus__Host=rabbitmq
+      - EventBus__Port=5672
+    depends_on:
+      - postgres-payments
+      - rabbitmq
+    networks:
+      - microservices-net
+
+  notificationservice:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.notificationservice
+    ports:
+      - "5005:5005"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5005
+      - ConnectionStrings__DefaultConnection=Host=postgres-notifications;Port=5432;Database=notificationservice;Username=postgres;Password=postgres
+      - EventBus__Host=rabbitmq
+      - EventBus__Port=5672
+    depends_on:
+      - postgres-notifications
+      - rabbitmq
+    networks:
+      - microservices-net
+
+volumes:
+  pgdata-users:
+  pgdata-products:
+  pgdata-orders:
+  pgdata-payments:
+  pgdata-notifications:
+  rabbitmq-data:
+
+networks:
+  microservices-net:
+    driver: bridge
