@@ -46,3 +46,6 @@ docker-compose.override.yml
 
 ## Secrets
 appsettings.*.local.json
+
+## Stray project copies
+/NotificationService/
